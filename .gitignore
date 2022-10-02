@@ -1,0 +1,8 @@
+.qtc_clangd/*
+build/*
+data/*
+vendor/*
+
+.qmake.stash
+*.user
+Makefile
