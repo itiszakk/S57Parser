@@ -19,8 +19,6 @@ public:
     void error(const QString &message);
 
 private:
-    QTextBrowser *logBrowser;
-
     const QString DEBUG_MESSAGE_TYPE = "DEBUG";
     const QString INFORMATION_MESSAGE_TYPE = "INFO";
     const QString WARNING_MESSAGE_TYPE = "WARNING";
@@ -31,6 +29,8 @@ private:
     const QString INFORMATION_COLOR = "ForestGreen";
     const QString WARNING_COLOR = "Orange";
     const QString ERROR_COLOR = "Firebrick";
+
+    QTextBrowser *logBrowser;
 
     QString getFormatedString(const QString &messageType, const QString &htmlColor, const QString &message);
 };

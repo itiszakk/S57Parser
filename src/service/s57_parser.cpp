@@ -1,14 +1,14 @@
 #include "s57_parser.h"
 
-S57Parser::S57Parser(const QString &inputFilePath, const QString &outputFilePath, Logger *log)
-    : inputFilePath(inputFilePath)
+S57Parser::S57Parser(const QString &inputFilePath, const QString &outputFilePath, QMap<QString, QVariant> settings, Logger *log)
+    : settings(settings)
+    , log(log)
+    , gdal(nullptr)
+    , map(nullptr)
+    , inputFilePath(inputFilePath)
     , outputFilePath(outputFilePath)
     , coordinateOffset(0.0, 0.0)
     , maxCoordinate(0.0, 0.0)
-    , log(log)
-    , gdal(nullptr)
-    , grid(nullptr)
-    , map(nullptr)
 {
 
 }
@@ -16,7 +16,6 @@ S57Parser::S57Parser(const QString &inputFilePath, const QString &outputFilePath
 S57Parser::~S57Parser()
 {
     delete gdal;
-    delete grid;
     delete map;
 }
 
@@ -29,8 +28,7 @@ void S57Parser::parse()
         return;
     }
 
-    grid = new Model::Grid(0, 0, 40000, 40000, 400, 400);
-    map = new Model::Map(grid);
+    map = new Model::Map(getGridBySettings());
 
     OGRLayer *coverageLayer = gdal->getLayerByName(COVERAGE_LAYER_ACRONYM);
     OGRLayer *waterLayer = gdal->getLayerByName(WATER_LAYER_ACRONYM);
@@ -51,6 +49,17 @@ void S57Parser::parse()
     }
 
     log->info("Parsing completed");
+}
+
+Model::Grid* S57Parser::getGridBySettings()
+{
+    return new Model::Grid(
+                settings["grid.border.left"].toInt(),
+                settings["grid.border.bottom"].toInt(),
+                settings["grid.border.right"].toInt(),
+                settings["grid.border.top"].toInt(),
+                settings["grid.ticks.x"].toInt(),
+                settings["grid.ticks.y"].toInt());
 }
 
 void S57Parser::waterLayerHandler(OGRLayer *waterLayer)
@@ -183,9 +192,12 @@ void S57Parser::setCoordinateOffset(OGRLayer *coverageLayer)
 
 Model::Point S57Parser::getAdjustedPoint(QVector2D point)
 {
+    double xScale = settings["coordinate.scale.x"].toDouble();
+    double yScale = settings["coordinate.scale.y"].toDouble();
+
     Model::Point adjustedPoint = Model::Point(
-                COORDINATE_SCALE * (point.x() + coordinateOffset.x()) / (maxCoordinate.x() + coordinateOffset.x()),
-                COORDINATE_SCALE * (point.y() + coordinateOffset.y()) / (maxCoordinate.y() + coordinateOffset.y()));
+                xScale * (point.x() + coordinateOffset.x()) / (maxCoordinate.x() + coordinateOffset.x()),
+                yScale * (point.y() + coordinateOffset.y()) / (maxCoordinate.y() + coordinateOffset.y()));
 
     return adjustedPoint;
 }

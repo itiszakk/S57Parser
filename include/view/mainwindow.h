@@ -4,6 +4,11 @@
 #include <QMainWindow>
 #include <QFileDialog>
 #include <QString>
+#include <QAnyStringView>
+#include <QSettings>
+#include <QVariant>
+#include <QPointF>
+#include <QTableWidgetItem>
 
 #include "logger.h"
 #include "s57_parser.h"
@@ -24,21 +29,27 @@ private slots:
     void on_inputButton_clicked();
     void on_outputButton_clicked();
     void on_runButton_clicked();
+    void on_configTable_itemChanged(QTableWidgetItem *item);
 
 private:
     const char *GDAL_DATA_ENVIROMENT_VARIABLE = "GDAL_DATA";
     const char *GDAL_DRIVER_PATH_ENVIROMENT_VARIABLE = "GDAL_DRIVER_PATH";
-    const char *INPUT_FILE_FILTER = "*.000";
-    const char *OUTPUT_FILE_NAME = "map.json";
+
+    QSettings *cfg;
+    QMap<QString, QVariant> settings;
+
+    Logger *log;
+    S57Parser *parser;
+    Ui::MainWindow *ui;
 
     QString inputFilePath;
     QString outputFileDirectory;
 
-    Logger *log;
-    S57Parser *parser;
-
-    Ui::MainWindow *ui;
-
+    void initSettings();
+    bool checkSettingsValue(QString key, QString valueAsString, QVariant *valuePtr);
+    void setInputLine();
+    void setOutputLine();
+    void fillConfigurationTable();
     void setEnviroment();
 };
 #endif // MAINWINDOW_H
