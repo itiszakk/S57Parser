@@ -2,6 +2,7 @@
 build/*
 data/*
 vendor/*
+include/view/ui_*
 
 .qmake.stash
 *.user
