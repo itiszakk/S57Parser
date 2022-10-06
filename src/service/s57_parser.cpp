@@ -76,6 +76,11 @@ void S57Parser::waterLayerHandler(OGRLayer *waterLayer)
         Model::Isoline isoline = Model::Isoline(WATER_ISOLINE_TYPE);
         double waterMinDepth = gdal->getFieldByName(feature, WATER_MIN_DEPTH).toDouble();
 
+        if (!settings["allow.negative.levels"].toBool() && waterMinDepth < 0)
+        {
+            continue;
+        }
+
         for (const QList<QVector2D> &polygon : gdal->getMultiPolygonGeometry(feature))
         {
             for (QVector2D point : polygon)

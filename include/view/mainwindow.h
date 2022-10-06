@@ -32,10 +32,6 @@ private slots:
     void on_configTable_itemChanged(QTableWidgetItem *item);
 
 private:
-    const char *GDAL_DATA_ENVIROMENT_VARIABLE = "GDAL_DATA";
-    const char *GDAL_DRIVER_PATH_ENVIROMENT_VARIABLE = "GDAL_DRIVER_PATH";
-
-    QSettings *cfg;
     QMap<QString, QVariant> settings;
 
     Logger *log;
@@ -47,9 +43,9 @@ private:
 
     void initSettings();
     bool checkSettingsValue(QString key, QString valueAsString, QVariant *valuePtr);
+    void doActionsWhenChangedSetting(QString key);
     void setInputLine();
     void setOutputLine();
     void fillConfigurationTable();
-    void setEnviroment();
 };
 #endif // MAINWINDOW_H
