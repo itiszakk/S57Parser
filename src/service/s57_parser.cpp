@@ -31,15 +31,19 @@ void S57Parser::parse()
     map = new Model::Map(getGridBySettings());
 
     OGRLayer *coverageLayer = gdal->getLayerByName(COVERAGE_LAYER_ACRONYM);
-    OGRLayer *waterLayer = gdal->getLayerByName(WATER_LAYER_ACRONYM);
-    OGRLayer *surfaceLayer = gdal->getLayerByName(SURFACE_LAYER_ACRONYM);
-    OGRLayer *soundingLayer = gdal->getLayerByName(SOUNDING_LAYER_ACRONYM);
-
     setCoordinateOffset(coverageLayer);
 
+    OGRLayer *waterLayer = gdal->getLayerByName(WATER_LAYER_ACRONYM);
     waterLayerHandler(waterLayer);
+
+    OGRLayer *surfaceLayer = gdal->getLayerByName(SURFACE_LAYER_ACRONYM);
     surfaceLayerHandler(surfaceLayer);
-    soundingLayerHandler(soundingLayer);
+
+    if (settings["allow.sounding.points"].toBool())
+    {
+        OGRLayer *soundingLayer = gdal->getLayerByName(SOUNDING_LAYER_ACRONYM);
+        soundingLayerHandler(soundingLayer);
+    }
 
     gdal->close();
 
@@ -73,7 +77,7 @@ void S57Parser::waterLayerHandler(OGRLayer *waterLayer)
 
     for (OGRFeature *feature : gdal->getFeatureList(waterLayer))
     {
-        Model::Isoline isoline = Model::Isoline(WATER_ISOLINE_TYPE);
+        Model::Isoline isoline = Model::Isoline(settings["isoline.water.type"].toString());
         double waterMinDepth = gdal->getFieldByName(feature, WATER_MIN_DEPTH).toDouble();
 
         if (!settings["allow.negative.levels"].toBool() && waterMinDepth < 0)
@@ -104,7 +108,7 @@ void S57Parser::surfaceLayerHandler(OGRLayer *surfaceLayer)
 
     for (OGRFeature *feature : gdal->getFeatureList(surfaceLayer))
     {
-        Model::Isoline isoline = Model::Isoline(SURFACE_ISOLINE_TYPE);
+        Model::Isoline isoline = Model::Isoline(settings["isoline.surface.type"].toString());
 
         /* Land area (LNDARE) allows several geometry primitives */
 
@@ -138,7 +142,7 @@ void S57Parser::soundingLayerHandler(OGRLayer *soundingLayer)
     {
         for (QVector3D point : gdal->getMultiPointGeometry(feature))
         {
-            Model::Isoline isoline = Model::Isoline(WATER_ISOLINE_TYPE);
+            Model::Isoline isoline = Model::Isoline(settings["isoline.sounding.type"].toString());
             isoline.addContourPoint(getAdjustedPoint(point.toVector2D()));
             map->addLevel(point.z(), isoline);
         }

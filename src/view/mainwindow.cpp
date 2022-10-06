@@ -156,6 +156,11 @@ void MainWindow::initSettings()
     settings["coordinate.scale.y"] = 400.0;
 
     settings["allow.negative.levels"] = true;
+    settings["allow.sounding.points"] = true;
+
+    settings["isoline.water.type"] = "water";
+    settings["isoline.sounding.type"] = "water";
+    settings["isoline.surface.type"] = "surface";
 
     settings["grid.border.left"] = 0;
     settings["grid.border.bottom"] = 0;

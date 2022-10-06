@@ -31,8 +31,6 @@ private:
     const QString COVERAGE_LAYER_ACRONYM = "M_COVR";
     const QString WATER_MIN_DEPTH = "DRVAL1";
     const QString WATER_MAX_DEPTH = "DRVAL2";
-    const QString WATER_ISOLINE_TYPE = "water";
-    const QString SURFACE_ISOLINE_TYPE = "surface";
     const QString GEOMETRY_POLYGON = "POLYGON";
     const QString GEOMETRY_POINT = "POINT";
     const double MIN_LATITUDE = -90.0;
