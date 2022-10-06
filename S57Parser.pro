@@ -43,6 +43,12 @@ GDAL_LIB_PATH = $${GDAL_ROOT_PATH}/lib
 # Динамические библиотеки GDAL
 GDAL_BIN_PATH = $${GDAL_ROOT_PATH}/bin
 
+# Динамические библиотеки GDAL
+GDAL_DATA_PATH = $${GDAL_BIN_PATH}/gdal-data
+
+# Динамические библиотеки GDAL
+GDAL_PLUGIN_PATH = $${GDAL_BIN_PATH}/gdal/plugins
+
 # Каталог UI форм
 DEV_UI_PATH = $${PWD}/ui
 
@@ -96,22 +102,9 @@ DISTFILES += \
 target.path = $${PROD_BUILD_PATH}
 
 qt_dll.path = $${PROD_BUILD_PATH}
-qt_dll.files += $$[QT_INSTALL_BINS]/d3dcompiler_47.dll
-qt_dll.files += $$[QT_INSTALL_BINS]/opengl32sw.dll
 qt_dll.files += $$[QT_INSTALL_BINS]/Qt6Core.dll
 qt_dll.files += $$[QT_INSTALL_BINS]/Qt6Gui.dll
-qt_dll.files += $$[QT_INSTALL_BINS]/Qt6Svg.dll
 qt_dll.files += $$[QT_INSTALL_BINS]/Qt6Widgets.dll
-qt_dll.files += $$[QT_INSTALL_BINS]/Qt6Gui.dll
-
-qt_icon.path = $${PROD_BUILD_PATH}/iconengines
-qt_icon.files += $$[QT_INSTALL_PLUGINS]/iconengines/qsvgicon.dll
-
-qt_image.path = $${PROD_BUILD_PATH}/imageformats
-qt_image.files += $$[QT_INSTALL_PLUGINS]/imageformats/qgif.dll
-qt_image.files += $$[QT_INSTALL_PLUGINS]/imageformats/qico.dll
-qt_image.files += $$[QT_INSTALL_PLUGINS]/imageformats/qjpeg.dll
-qt_image.files += $$[QT_INSTALL_PLUGINS]/imageformats/qsvg.dll
 
 qt_platform.path = $${PROD_BUILD_PATH}/platforms
 qt_platform.files += $$[QT_INSTALL_PLUGINS]/platforms/qwindows.dll
@@ -142,15 +135,13 @@ gdal_dll.files += $${GDAL_BIN_PATH}/xerces-c_3_2.dll
 gdal_dll.files += $${GDAL_BIN_PATH}/zlib.dll
 
 gdal_data.path = $${PROD_BUILD_PATH}/gdal-data
-gdal_data.files += $${GDAL_BIN_PATH}/gdal-data/*
+gdal_data.files += $${GDAL_DATA_PATH}/*
 
 gdal_plugin.path = $${PROD_BUILD_PATH}/gdal-plugins
-gdal_plugin.files += $${GDAL_BIN_PATH}/gdal/plugins/*
+gdal_plugin.files += $${GDAL_PLUGIN_PATH}/*
 
 INSTALLS += target \
     qt_dll \
-    qt_icon \
-    qt_image \
     qt_platform \
     qt_style \
     gdal_dll \
