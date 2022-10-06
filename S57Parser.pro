@@ -1,66 +1,158 @@
 QT += core gui
-
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++17
+
+# Предотвращение автоматического создания подкаталогов (debug и release)
 CONFIG -= debug_and_release debug_and_release_target
 
+# Текущая версия проекта (debug или release)
 CONFIG(debug, debug|release) {
     BUILD_FLAG = debug
 } else {
     BUILD_FLAG = release
 }
 
+# Название скомпилированного файла
 TARGET = s57parser
 
-PROJECT_BUILD_PATH = $$PWD/build/$$BUILD_FLAG
-PROJECT_INCLUDE_PATH = $$PWD/include
-PROJECT_SOURCE_PATH = $$PWD/src
-PROJECT_VENDOR_PATH = $$PWD/vendor
-PROJECT_UI_PATH = $$PWD/ui
+# Путь к скомилированному файлу (для разработки)
+DESTDIR = $${PWD}/build/$${BUILD_FLAG}
 
-PROJECT_INTERMEDIATE_PATH = $$PROJECT_BUILD_PATH/intermediate
-RCC_DIR = $$PROJECT_INTERMEDIATE_PATH/rcc/
-MOC_DIR = $$PROJECT_INTERMEDIATE_PATH/moc/
-OBJECTS_DIR = $$PROJECT_INTERMEDIATE_PATH/obj/
+# Путь к скомпилированному файлу (для итоговой версии)
+PROD_BUILD_PATH = $${PWD}/$${TARGET}
 
-UI_DIR = $$PROJECT_INCLUDE_PATH/view/
-DESTDIR = $$PROJECT_BUILD_PATH/
+# Каталог заголовков (.h)
+DEV_INCLUDE_PATH = $${PWD}/include
 
-GDAL_ROOT_PATH = $$PROJECT_VENDOR_PATH/gdal-3.5.2
-GDAL_INCLUDE_PATH = $$GDAL_ROOT_PATH/include
-GDAL_LIB_PATH = $$GDAL_ROOT_PATH/lib
+# Каталог исходников (.cpp)
+DEV_SOURCE_PATH = $${PWD}/src
 
-LIBS += -L$$GDAL_LIB_PATH/
+# Каталог сторонних файлов
+DEV_VENDOR_PATH = $${PWD}/vendor
+
+# Библиотека GDAL
+GDAL_ROOT_PATH = $${DEV_VENDOR_PATH}/gdal-3.5.2
+
+# Заголовки GDAL
+GDAL_INCLUDE_PATH = $${GDAL_ROOT_PATH}/include
+
+# Статические библиотеки GDAL
+GDAL_LIB_PATH = $${GDAL_ROOT_PATH}/lib
+
+# Динамические библиотеки GDAL
+GDAL_BIN_PATH = $${GDAL_ROOT_PATH}/bin
+
+# Каталог UI форм
+DEV_UI_PATH = $${PWD}/ui
+
+# Каталоги промежуточных файлов
+DEV_INTERMEDIATE_PATH = $${DESTDIR}/intermediate
+RCC_DIR = $${DEV_INTERMEDIATE_PATH}/rcc/
+MOC_DIR = $${DEV_INTERMEDIATE_PATH}/moc/
+OBJECTS_DIR = $${DEV_INTERMEDIATE_PATH}/obj/
+
+# Каталог промежуточных файлов интерфейса
+UI_DIR = $${DEV_INCLUDE_PATH}/view/
+
+# Подключение сторонних библиотек в Qt
+LIBS += -L$${GDAL_LIB_PATH}/
 LIBS += -lgdal_i
 
-INCLUDEPATH += $$PROJECT_INCLUDE_PATH
-INCLUDEPATH += $$PROJECT_INCLUDE_PATH/model/
-INCLUDEPATH += $$PROJECT_INCLUDE_PATH/view/
-INCLUDEPATH += $$PROJECT_INCLUDE_PATH/service/
+# Каталоги заголовков в которых следует выполнять поиск при компиляции проекта
+INCLUDEPATH += $${DEV_INCLUDE_PATH}
+INCLUDEPATH += $${DEV_INCLUDE_PATH}/model/
+INCLUDEPATH += $${DEV_INCLUDE_PATH}/view/
+INCLUDEPATH += $${DEV_INCLUDE_PATH}/service/
+INCLUDEPATH += $${GDAL_INCLUDE_PATH}
 
-INCLUDEPATH += $$GDAL_INCLUDE_PATH
-
-DEPENDPATH += $$GDAL_INCLUDE_PATH
-
-SOURCES += \
-    $$PROJECT_SOURCE_PATH/main.cpp \
-    $$PROJECT_SOURCE_PATH/view/mainwindow.cpp \
-    $$PROJECT_SOURCE_PATH/view/logger.cpp \
-    $$PROJECT_SOURCE_PATH/model/model.cpp \
-    $$PROJECT_SOURCE_PATH/service/gdal_manager.cpp \
-    $$PROJECT_SOURCE_PATH/service/s57_parser.cpp
-
+# Имена заголовочных файлов в проекте
 HEADERS += \
-    $$PROJECT_INCLUDE_PATH/view/mainwindow.h \
-    $$PROJECT_INCLUDE_PATH/view/logger.h \
-    $$PROJECT_INCLUDE_PATH/model/model.h \
-    $$PROJECT_INCLUDE_PATH/service/gdal_manager.h \
-    $$PROJECT_INCLUDE_PATH/service/s57_parser.h
+    $${DEV_INCLUDE_PATH}/view/mainwindow.h \
+    $${DEV_INCLUDE_PATH}/view/logger.h \
+    $${DEV_INCLUDE_PATH}/model/model.h \
+    $${DEV_INCLUDE_PATH}/service/gdal_manager.h \
+    $${DEV_INCLUDE_PATH}/service/s57_parser.h
 
+# Имена исходных файлов в проекте
+SOURCES += \
+    $${DEV_SOURCE_PATH}/main.cpp \
+    $${DEV_SOURCE_PATH}/view/mainwindow.cpp \
+    $${DEV_SOURCE_PATH}/view/logger.cpp \
+    $${DEV_SOURCE_PATH}/model/model.cpp \
+    $${DEV_SOURCE_PATH}/service/gdal_manager.cpp \
+    $${DEV_SOURCE_PATH}/service/s57_parser.cpp
+
+# Имена UI форм в проекте
 FORMS += \
-    $$PROJECT_UI_PATH/mainwindow.ui
+    $${DEV_UI_PATH}/mainwindow.ui
 
+# Дополнительные файлы
 DISTFILES += \
     .gitignore \
     README.md
+
+# Собрка проекта в итогововый вариант
+target.path = $${PROD_BUILD_PATH}
+
+qt_dll.path = $${PROD_BUILD_PATH}
+qt_dll.files += $$[QT_INSTALL_BINS]/d3dcompiler_47.dll
+qt_dll.files += $$[QT_INSTALL_BINS]/opengl32sw.dll
+qt_dll.files += $$[QT_INSTALL_BINS]/Qt6Core.dll
+qt_dll.files += $$[QT_INSTALL_BINS]/Qt6Gui.dll
+qt_dll.files += $$[QT_INSTALL_BINS]/Qt6Svg.dll
+qt_dll.files += $$[QT_INSTALL_BINS]/Qt6Widgets.dll
+qt_dll.files += $$[QT_INSTALL_BINS]/Qt6Gui.dll
+
+qt_icon.path = $${PROD_BUILD_PATH}/iconengines
+qt_icon.files += $$[QT_INSTALL_PLUGINS]/iconengines/qsvgicon.dll
+
+qt_image.path = $${PROD_BUILD_PATH}/imageformats
+qt_image.files += $$[QT_INSTALL_PLUGINS]/imageformats/qgif.dll
+qt_image.files += $$[QT_INSTALL_PLUGINS]/imageformats/qico.dll
+qt_image.files += $$[QT_INSTALL_PLUGINS]/imageformats/qjpeg.dll
+qt_image.files += $$[QT_INSTALL_PLUGINS]/imageformats/qsvg.dll
+
+qt_platform.path = $${PROD_BUILD_PATH}/platforms
+qt_platform.files += $$[QT_INSTALL_PLUGINS]/platforms/qwindows.dll
+
+qt_style.path = $${PROD_BUILD_PATH}/styles
+qt_style.files += $$[QT_INSTALL_PLUGINS]/styles/qwindowsvistastyle.dll
+
+gdal_dll.path = $${PROD_BUILD_PATH}
+gdal_dll.files += $${GDAL_BIN_PATH}/freexl.dll
+gdal_dll.files += $${GDAL_BIN_PATH}/gdal305.dll
+gdal_dll.files += $${GDAL_BIN_PATH}/geos.dll
+gdal_dll.files += $${GDAL_BIN_PATH}/geos_c.dll
+gdal_dll.files += $${GDAL_BIN_PATH}/iconv-2.dll
+gdal_dll.files += $${GDAL_BIN_PATH}/libcrypto-1_1-x64.dll
+gdal_dll.files += $${GDAL_BIN_PATH}/libcurl.dll
+gdal_dll.files += $${GDAL_BIN_PATH}/libexpat.dll
+gdal_dll.files += $${GDAL_BIN_PATH}/libmysql.dll
+gdal_dll.files += $${GDAL_BIN_PATH}/libpq.dll
+gdal_dll.files += $${GDAL_BIN_PATH}/libssl-1_1-x64.dll
+gdal_dll.files += $${GDAL_BIN_PATH}/libxml2.dll
+gdal_dll.files += $${GDAL_BIN_PATH}/ogdi.dll
+gdal_dll.files += $${GDAL_BIN_PATH}/openjp2.dll
+gdal_dll.files += $${GDAL_BIN_PATH}/proj_7_2.dll
+gdal_dll.files += $${GDAL_BIN_PATH}/spatialite.dll
+gdal_dll.files += $${GDAL_BIN_PATH}/sqlite3.dll
+gdal_dll.files += $${GDAL_BIN_PATH}/tiff.dll
+gdal_dll.files += $${GDAL_BIN_PATH}/xerces-c_3_2.dll
+gdal_dll.files += $${GDAL_BIN_PATH}/zlib.dll
+
+gdal_data.path = $${PROD_BUILD_PATH}/gdal-data
+gdal_data.files += $${GDAL_BIN_PATH}/gdal-data/*
+
+gdal_plugin.path = $${PROD_BUILD_PATH}/gdal-plugins
+gdal_plugin.files += $${GDAL_BIN_PATH}/gdal/plugins/*
+
+INSTALLS += target \
+    qt_dll \
+    qt_icon \
+    qt_image \
+    qt_platform \
+    qt_style \
+    gdal_dll \
+    gdal_data \
+    gdal_plugin
