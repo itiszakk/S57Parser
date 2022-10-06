@@ -1,7 +1,7 @@
 #ifndef LOGGER_H
 #define LOGGER_H
 
-#include <QWidget>
+#include <QTabWidget>
 #include <QTextBrowser>
 #include <QDateTime>
 #include <QString>
@@ -11,7 +11,7 @@ class Logger
 {
 
 public:
-    Logger(QTextBrowser *logBrowser);
+    Logger(QTabWidget *tabWidget, QWidget *logTab, QTextBrowser *logBrowser);
 
     void debug(const QString &message);
     void info(const QString &message);
@@ -30,9 +30,12 @@ private:
     const QString WARNING_COLOR = "Orange";
     const QString ERROR_COLOR = "Firebrick";
 
+    QTabWidget *tabWidget;
+    QWidget* logTab;
     QTextBrowser *logBrowser;
 
     QString getFormatedString(const QString &messageType, const QString &htmlColor, const QString &message);
+    void appendMessageAndUpdateWidget(QString message);
 };
 
 #endif // LOGGER_H
